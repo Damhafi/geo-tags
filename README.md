@@ -1,40 +1,45 @@
-# Projeto Geo Tags
+# Geo-Tags Python Script
 
-Este projeto contém scripts Python para ler e adicionar metadados EXIF em imagens, com foco em geotags (coordenadas de latitude e longitude).
+Este script em Python permite adicionar e verificar metadados EXIF em imagens, incluindo geotags (coordenadas geográficas) e outras informações como palavras-chave e descrição. As variáveis podem ser facilmente ajustadas para diferentes imagens e coordenadas.
 
-## Arquivos do Projeto
+## Variáveis Importantes
 
-### `verification-geo-tags.py`
+### 1. **Caminho das Imagens**
+O script precisa de dois caminhos de arquivo principais: o caminho da imagem de entrada (a qual você deseja adicionar metadados) e o caminho de saída (onde a imagem com metadados será salva).
 
-Esse script permite ler e exibir os metadados EXIF de uma imagem. Ele utiliza a biblioteca `piexif` para manipulação dos dados EXIF e a biblioteca `PIL` para abrir as imagens.
+- **`image_path`**: Caminho para a imagem original (sem metadados ou com metadados a serem atualizados).
+  - Exemplo: `"C:/imagens/imagem_original.jpg"`
 
-```python
-import piexif
-from PIL import Image
+- **`output_path`**: Caminho para salvar a imagem com os metadados adicionados.
+  - Exemplo: `"C:/imagens/imagem_com_metadados.jpg"`
 
-def read_exif(image_path):
-    """Lê e exibe os metadados EXIF de uma imagem."""
-    img = Image.open(image_path)
+Certifique-se de atualizar esses caminhos com o local correto onde suas imagens estão armazenadas.
 
-    # Obter os dados EXIF
-    exif_data = img.info.get("exif")
-    if exif_data:
-        exif_dict = piexif.load(exif_data)
-        # Exibir as informações EXIF
-        print("Metadados EXIF da imagem:")
-        for ifd_name in exif_dict:
-            print(f"IFD: {ifd_name}")
-            if exif_dict[ifd_name]:  # Verificar se existe dados antes de iterar
-                for tag, value in exif_dict[ifd_name].items():
-                    tag_name = piexif.TAGS[ifd_name].get(tag, {}).get('name', 'Unknown')
-                    print(f"  {tag_name} : {value}")
-            else:
-                print(f"  Sem dados para o IFD: {ifd_name}")
-    else:
-        print("Sem dados EXIF.")
+### 2. **Geotags (Latitude e Longitude)**
+As coordenadas geográficas (latitude e longitude) são inseridas como números decimais. A conversão para o formato de graus, minutos e segundos (DMS) será realizada automaticamente.
 
-# Caminho da imagem com metadados adicionados
-output_path = r"............."  # Atualize com o caminho correto
+- **Latitude**: A coordenada da latitude. Para o Hemisfério Sul, use valores negativos (exemplo: `-19.8157`).
+- **Longitude**: A coordenada da longitude. Para o Hemisfério Oeste, use valores negativos (exemplo: `-43.9417`).
 
-# Verificar os metadados da imagem
-read_exif(output_path)
+### 3. **Conversão de Coordenadas**
+As coordenadas decimais são convertidas para o formato DMS (graus, minutos, segundos), que é o formato padrão para metadados EXIF.
+
+- **Hemisfério Norte e Leste**: Se a coordenada for positiva, o valor será convertido normalmente.
+- **Hemisfério Sul e Oeste**: Se a coordenada for negativa, o valor será invertido para os respectivos hemisférios (S para Latitude e W para Longitude).
+
+### 4. **Palavras-chave e Descrição**
+- **`keywords`**: Uma lista de palavras-chave associadas à imagem. Elas são usadas como parte dos metadados EXIF.
+  - Exemplo: `["Praia de Copacabana", "Rio de Janeiro", "verão"]`
+
+- **`description`**: Uma descrição geral da imagem ou do local relacionado.
+  - Exemplo: `"Vista da Praia de Copacabana, no Rio de Janeiro, durante o verão."`
+
+Esses dados serão adicionados aos metadados EXIF sob o campo `UserComment`.
+
+## Como Usar
+
+### 1. **Verificar Metadados EXIF**
+Para verificar os metadados de uma imagem, altere a variável `output_path` para o caminho da imagem que deseja inspecionar e execute o script. O comando `read_exif(image_path)` exibirá as informações EXIF da imagem.
+
+### 2. **Adicionar Metadados EXIF**
+Para adicionar ou atualizar os metadados EXIF, altere as variáveis `image_path`, `output_path`, `geotags`, `keywords`, e `description` conforme necessário e execute o script. Os novos metadados serão incorporados na imagem e o arquivo com os metadados será salvo no caminho especificado em `output_path`.

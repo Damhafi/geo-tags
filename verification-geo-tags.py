@@ -23,7 +23,7 @@ def read_exif(image_path):
         print("Sem dados EXIF.")
 
 # Caminho da imagem com metadados adicionados
-output_path = r"............"  # Atualize com o caminho correto
+output_path = r"..................."   # Atualize com o caminho correto
 
 # Verificar os metadados da imagem
 read_exif(output_path)
